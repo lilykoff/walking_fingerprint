@@ -1,6 +1,6 @@
 
 library(tidyverse)
-training_data <- new_training_data3
+
 get_important_grids <- function(training_data, threshold){
   imp_grids <- list()
   for(i in 1:32){
