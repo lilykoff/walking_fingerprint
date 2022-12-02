@@ -128,6 +128,7 @@ get_important_grids <- function(training_data, threshold, key){
 fit_models <- function(imp_grids, training_data, testing_data){
   output_preds <- list()
   output_predgrids <- list()
+  models_all <- list()
   for(i in 1:32){
     
     grids <- imp_grids[[i]]
@@ -145,7 +146,7 @@ fit_models <- function(imp_grids, training_data, testing_data){
     top3 <- grids[c(which(pvals==sort(pvals)[1]), which(pvals==sort(pvals)[2]), which(pvals==sort(pvals)[3]))][1:3]
     names(top3) <- c("1", "2", "3")
     output_predgrids[[i]] <- top3
-    
+    models_all[[i]] <- model
     # predict probability that each row belongs to subject i 
     pred <- predict(model, training_tmp[,-1], type = "response")
     
@@ -154,7 +155,7 @@ fit_models <- function(imp_grids, training_data, testing_data){
     output_predgrids[[i]] <- top3
     print(paste("Model", i, "completed"))
   }
-  return(list(predictions = output_preds, most_imp_grids = output_predgrids))
+  return(list(predictions = output_preds, most_imp_grids = output_predgrids, models = models_all))
 }
 
 get_predicted_identity <- function(output_preds){
