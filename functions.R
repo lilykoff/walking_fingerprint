@@ -110,11 +110,11 @@ create_train_test <- function(df_fit, time_lags, gcell_size, train_split, test_s
   return(list(train = training_data, test = testing_data, key = names_key))
 }
 
-get_important_grids <- function(training_data, threshold){
+get_important_grids <- function(training_data, threshold, key){
   imp_grids <- list()
   for(i in 1:32){
     imp_names <- training_data %>% filter(subject_id==i) %>% pivot_longer(cols = -subject_id) %>% 
-      left_join(., names_key, by=c("name"="gc_name" ))%>% group_by(name, u) %>% 
+      left_join(., key, by=c("name"="gc_name" ))%>% group_by(name, u) %>% 
       summarize(value = sum(value)) %>% group_by(u) %>% mutate(
         group_sum = sum(value)
       ) %>% ungroup() %>% mutate(
@@ -142,7 +142,7 @@ fit_models <- function(imp_grids, training_data, testing_data){
     model <- glm(class ~., data = training_tmp[,-1], family = binomial(link ="logit"))
     # get most important grids 
     pvals <- summary(model)$coefficients[,"Pr(>|z|)"][-1]
-    top3 <- names_1pct[c(which(pvals==sort(pvals)[1]), which(pvals==sort(pvals)[2]), which(pvals==sort(pvals)[3]))][1:3]
+    top3 <- grids[c(which(pvals==sort(pvals)[1]), which(pvals==sort(pvals)[2]), which(pvals==sort(pvals)[3]))][1:3]
     names(top3) <- c("1", "2", "3")
     output_predgrids[[i]] <- top3
     
@@ -152,8 +152,9 @@ fit_models <- function(imp_grids, training_data, testing_data){
     # store predictions in another matrix where column i is the predicted probs for subject i
     output_preds[[i]] <- data.frame(cbind(preds = pred, subj = testing_tmp$subject_id))
     output_predgrids[[i]] <- top3
+    print(paste("Model", i, "completed"))
   }
-  return(list(predictions = output_preds, most_imp_girds = output_predgrids))
+  return(list(predictions = output_preds, most_imp_grids = output_predgrids))
 }
 
 get_predicted_identity <- function(output_preds){
