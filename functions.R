@@ -187,3 +187,18 @@ get_predicted_identity <- function(output_preds){
   return(list(mean_predictions = meanpreds_long, results = results_all))
 }
 
+plot_predicted_probs <- function(longdf, save = TRUE){
+  vlines <- seq(1,32,1)
+  col1 <-"firebrick3"; col2 <- "springgreen3"
+  plot <- ggplot(longdf, aes(x = true_subj, y= prob, col = match2))+theme_minimal()+
+    labs(x = "Subject ID", y= "Avg. Predicted Probability ")+ 
+    scale_color_manual(name = "", values=c("Correct Subject" = col2, "Not Correct Subject" = col1))+
+    geom_vline(xintercept=vlines, col = "lightgrey", alpha=.2)+scale_x_continuous(breaks=seq(1,32,1))+
+    geom_jitter(size=3, alpha=.8, width = .1)+theme(legend.position="bottom")+scale_y_continuous(limits=c(0,1))
+  plot
+  if(save==TRUE){
+    ggsave(plot, "prob_plots.png")
+  }
+}
+
+
