@@ -18,6 +18,10 @@ data <- create_train_test(df_fit = df_fit, time_lags = time_lags, gcell_size = g
 train <- data.frame(data$train)
 test <- data.frame(data$test)
 names_key <- data.frame(data$key)
+# save training and testing data 
+write.csv(train, "train.csv")
+write.csv(test, "test.csv")
+write.csv(names_key, "names_key.csv")
 
 # set threshold for grid importance, i.e. which grids to keep 
 threshold <- 0.001 
@@ -34,3 +38,5 @@ model_results <- get_predicted_identity(predicted_output)
 # visualization 
 plot_predicted_probs(model_results$mean_predictions, save = T)
 model_results$results
+
+
