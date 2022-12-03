@@ -148,7 +148,7 @@ fit_models <- function(imp_grids, training_data, testing_data){
     output_predgrids[[i]] <- top3
     models_all[[i]] <- model
     # predict probability that each row belongs to subject i 
-    pred <- predict(model, training_tmp[,-1], type = "response")
+    pred <- predict(model, testing_tmp[,-1], type = "response")
     
     # store predictions in another matrix where column i is the predicted probs for subject i
     output_preds[[i]] <- data.frame(cbind(preds = pred, subj = testing_tmp$subject_id))
@@ -161,7 +161,7 @@ fit_models <- function(imp_grids, training_data, testing_data){
 get_predicted_identity <- function(output_preds){
   meanpreds <- matrix(NA, nrow = 32, ncol = 32)
   for(i in 1:32){
-    tmp <- output_preds[[i]]
+    tmp <- output_preds$predictions[[i]]
     tmp <-  tmp %>% group_by(subj) %>% summarize(
       meanpred = mean(preds)
     )
@@ -197,9 +197,9 @@ plot_predicted_probs <- function(longdf, save = TRUE){
     scale_color_manual(name = "", values=c("Correct Subject" = col2, "Not Correct Subject" = col1))+
     geom_vline(xintercept=vlines, col = "lightgrey", alpha=.2)+scale_x_continuous(breaks=seq(1,32,1))+
     geom_jitter(size=3, alpha=.8, width = .1)+theme(legend.position="bottom")+scale_y_continuous(limits=c(0,1))
-  plot
+  print(plot)
   if(save==TRUE){
-    ggsave(plot, "prob_plots.png")
+    ggsave("prob_plots.png")
   }
 }
 

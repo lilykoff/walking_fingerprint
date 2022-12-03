@@ -32,5 +32,5 @@ predicted_output <- fit_models(imp_grids = imp_grids, training_data = train, tes
 model_results <- get_predicted_identity(predicted_output)
 
 # visualization 
-plot_predicted_probs(model_results$meanpredslong)
+plot_predicted_probs(model_results$mean_predictions, save = T)
 model_results$results
