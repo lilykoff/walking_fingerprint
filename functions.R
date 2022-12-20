@@ -125,6 +125,18 @@ get_important_grids <- function(training_data, threshold, key){
   return(imp_grids)
 }
 
+imp_grids <- list()
+for(i in 1:32){
+  imp_names <- train_small %>% filter(subject_id==i) %>% pivot_longer(cols = -subject_id) %>% 
+    left_join(., key, by=c("name"="gc_name" ))%>% group_by(name, u) %>% 
+    summarize(value = sum(value)) %>% group_by(u) %>% mutate(
+      group_sum = sum(value)
+    ) %>% ungroup() %>% mutate(
+      pct = value/group_sum
+    ) %>% filter(pct >= threshold ) %>% dplyr::select(name)  %>% unlist()
+  imp_grids[[i]] <- unname(imp_names)
+}
+
 fit_models <- function(imp_grids, training_data, testing_data){
   output_preds <- list()
   output_predgrids <- list()

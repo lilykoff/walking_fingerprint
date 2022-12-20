@@ -17,7 +17,7 @@ create_train_test <- function(df_fit, time_lags, gcell_size, train_split, test_s
     return("Error: time lags must be vector")
   }
   if(!(all(time_lags > 0) & all(time_lags<100))){
-    return("Error: time lags must be between0 and 100 not inclusive")
+    return("Error: time lags must be between 0 and 100 not inclusive")
   }
   if(gcell_size <= 0 | gcell_size > 3){
     return("Error: grid cell size must be between 0 and 3")

@@ -1,10 +1,12 @@
 library(tidyverse)
 
 # set parameters for processing the data
-# change your filepath here -can't upload file to github because too big 
-raw_accel_data <- readRDS("~/Documents/raw_accel_data.rds")
+# data can be downlaoded from https://physionet.org/content/accelerometry-walk-climb-drive/1.0.0/
+data_path <- "./data"
 
-df_fit <- raw_accel_data
+
+df_fit <- readRDS(file.path(data_path,"raw_accel_data_deocs.rds"))
+
 # here we use six time lags, cell grid size of 0.25x0.25 m^2/s^4
 # and 200:180 split for the training and testing
 time_lags <- seq(15, 90, 15)
